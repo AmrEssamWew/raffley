@@ -19,6 +19,7 @@ defmodule RaffleyWeb.Router do
     conn =
       assign(conn, :message, message)
 
+    conn
     # |> IO.inspect()
   end
 
@@ -32,6 +33,7 @@ defmodule RaffleyWeb.Router do
     get("/", PageController, :home)
     get("/rules", RulesController, :index)
     get("/rules/:id", RulesController, :show)
+    live("/estimator", EstimatorLive)
   end
 
   # Other scopes may use custom stacks.
