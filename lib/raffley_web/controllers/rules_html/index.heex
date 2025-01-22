@@ -1,0 +1,12 @@
+
+<div class="rules">
+<h1> The Rules </h1>
+<ol>
+<p>
+<%= for rule <- @rules do %>
+  <li><%= rule.text %></li>
+<% end %>
+</p>
+
+</ol>
+</div>
