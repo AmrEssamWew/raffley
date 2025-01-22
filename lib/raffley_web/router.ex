@@ -18,9 +18,8 @@ defmodule RaffleyWeb.Router do
 
     conn =
       assign(conn, :message, message)
-      |> IO.inspect()
 
-    conn
+    # |> IO.inspect()
   end
 
   pipeline :api do
