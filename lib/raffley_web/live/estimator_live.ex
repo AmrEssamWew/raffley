@@ -5,14 +5,15 @@ defmodule RaffleyWeb.EstimatorLive do
     socket =
       assign(socket,
         ticket: 0,
-        price: 10
+        price: 10,
+        page_title: "Estimator"
       )
 
     if connected?(socket) do
       Process.send_after(self(), :update, 2000)
     end
 
-    {:ok, socket}
+    {:ok, socket, layout: {RaffleyWeb.Layouts, :simple}}
   end
 
   def render(assigns) do
