@@ -4,8 +4,25 @@ defmodule RaffleyWeb.Rafflelive.Index do
   alias RaffleyWeb.Components.CustomComponents
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, rafflelist: Raffleies.list_raffles(), page_title: "Raffles ")
-    {:ok, socket}
+    socket =
+      stream(socket, :rafflelist, Raffleies.list_raffles())
+
+    # IO.inspect(socket.assigns.streams.raffles, label: "MOUNT")
+    IO.inspect(socket.assigns.streams.rafflelist, lable: "Before Render")
+
+    socket =
+      attach_hook(socket, :log_stream, :after_render, fn socket ->
+        IO.inspect(socket.assigns.streams.rafflelist)
+        socket
+      end)
+
+    #   attach_hook(socket, :log_stream, :after_render, fn
+    #     socket ->
+    #       IO.inspect(socket.assigns.streams.raffles, label: "AFTER RENDER")
+    #       socket
+    #   end)
+
+    {:ok, assign(socket, page_title: "Raffles ")}
   end
 
   def render(assigns) do
@@ -20,8 +37,12 @@ defmodule RaffleyWeb.Rafflelive.Index do
           Any Guesses ?
         </:details>
       </CustomComponents.banner>
-      <div class="raffles">
-        <CustomComponents.raffle_card :for={raffle <- @rafflelist} raffle={raffle} />
+      <div class="raffles" id="raffles" phx-update="stream">
+        <CustomComponents.raffle_card
+          :for={{raffle_id, raffle} <- @streams.rafflelist}
+          raffle={raffle}
+          id={raffle_id}
+        />
       </div>
     </div>
     """
