@@ -15,6 +15,8 @@ defmodule Raffley.Raffleies do
   end
 
   def featured_raffles(raffle) do
+    Process.sleep(4000)
+
     Raffle
     |> where(status: :open)
     |> where([r], r.id != ^raffle.id)

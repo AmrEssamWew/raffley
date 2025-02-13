@@ -9,12 +9,16 @@ defmodule RaffleyWeb.Rafflelive.Show do
   def handle_params(%{"id" => id}, _uri, socket) do
     raffle = Raffleies.get_raffle!(id)
 
-    {:noreply,
-     assign(socket,
-       raffle: raffle,
-       featured_raffles: Raffleies.featured_raffles(raffle),
-       page_title: raffle.prize
-     )}
+    socket =
+      assign(socket,
+        raffle: raffle,
+        page_title: raffle.prize
+      )
+      |> assign_async(:featured_raffles, fn ->
+        {:ok, %{featured_raffles: Raffleies.featured_raffles(raffle)}}
+      end)
+
+    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -46,14 +50,25 @@ defmodule RaffleyWeb.Rafflelive.Show do
   def featured_raffle(assigns) do
     ~H"""
     <section>
-      <h4>Featured Raffles</h4>
-      <ul class="raffles">
-        <li :for={raffle <- @raffles}>
-          <.link navigate={~p"/raffleylist/#{raffle.id}"}>
-            <img src={raffle.image_path} /> {raffle.prize}
-          </.link>
-        </li>
-      </ul>
+      <.async_result :let={result} assign={@raffles}>
+        <:loading>
+          <div class="loading">
+            <div class="spinner"></div>
+          </div>
+        </:loading>
+        <:failed :let={{:error, reason}}>
+          Error while loading : {reason}
+        </:failed>
+
+        <h4>Featured Raffles</h4>
+        <ul class="raffles">
+          <li :for={raffle <- result}>
+            <.link navigate={~p"/raffleylist/#{raffle.id}"}>
+              <img src={raffle.image_path} /> {raffle.prize}
+            </.link>
+          </li>
+        </ul>
+      </.async_result>
     </section>
     """
   end
