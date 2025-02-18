@@ -15,8 +15,6 @@ defmodule Raffley.Raffles.Raffle do
 
   @doc false
   def changeset(raffle, attrs) do
-    IO.inspect(attrs, label: "wew")
-
     changeset =
       raffle
       |> cast(attrs, [:prize, :description, :ticket_price, :status, :image_path])
@@ -24,7 +22,6 @@ defmodule Raffley.Raffles.Raffle do
       |> validate_length(:description, min: 10)
       |> validate_number(:ticket_price, greater_than_or_equal_to: 1)
 
-    IO.inspect(changeset, label: "changeset")
     changeset
   end
 end
