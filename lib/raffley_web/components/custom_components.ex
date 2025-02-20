@@ -17,6 +17,7 @@ defmodule RaffleyWeb.Components.CustomComponents do
   def raffle_card(assigns) do
     ~H"""
     <div :if={@raffle != %{}} class="card">
+      <h2>{@raffle.charity.name}</h2>
       <.link navigate={~p"/raffleylist/#{@raffle.id}"} id={@id}>
         <img src={@raffle.image_path} />
         <h2>{@raffle.prize}</h2>

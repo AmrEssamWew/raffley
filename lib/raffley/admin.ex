@@ -27,4 +27,8 @@ defmodule Raffley.Admin do
   def update_raffle(raffle, attr) do
     Raffle.changeset(raffle, attr) |> Repo.update()
   end
+
+  def delete_raffle(raffle) do
+    Repo.delete(raffle)
+  end
 end

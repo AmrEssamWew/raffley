@@ -22,6 +22,7 @@ defmodule RaffleyWeb.AdminRafflelive.Index do
         </:actions>
         {@page_title}
       </.header>
+
       <.table id="raffles-list" rows={@streams.raffles}>
         <:col :let={{_id, raffle}} label="Prize">
           <.link navigate={~p"/raffleylist/#{raffle.id}"}>
@@ -39,8 +40,25 @@ defmodule RaffleyWeb.AdminRafflelive.Index do
             edit
           </.link>
         </:col>
+        <:col :let={{id, raffle}} label="Prize">
+          <.link phx-click={js_delete(id, raffle)} data-confirm="Are you sure ?">
+            Delete
+          </.link>
+        </:col>
       </.table>
     </div>
     """
+  end
+
+  def js_delete(id, raffle) do
+    JS.push("Delete", value: %{"raffle" => raffle.id})
+    |> JS.hide(to: "##{id}", transition: "fade-out")
+  end
+
+  def handle_event("Delete", %{"raffle" => id}, socket) do
+    raffle = Admin.get_raffle!(id)
+    {:ok, _} = Admin.delete_raffle(raffle)
+    socket = socket |> stream_delete(:raffles, raffle)
+    {:noreply, socket}
   end
 end

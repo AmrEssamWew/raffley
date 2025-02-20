@@ -11,6 +11,7 @@ defmodule Raffley.Raffleies do
     |> with_status(filter["status"])
     |> search_by(filter["q"])
     |> sort(filter["sort_by"])
+    |> preload(:charity)
     |> Repo.all()
   end
 
